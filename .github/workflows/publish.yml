@@ -26,5 +26,5 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const script = require('./scripts/getLatestRelease.mjs');
+            const script = require('./scripts/getLatestRelease.js');
             await script({ github, context, core });

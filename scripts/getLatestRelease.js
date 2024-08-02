@@ -1,4 +1,4 @@
-module.exports = ({ github, context, core }) => {
+module.exports = async ({ github, context, core }) => {
   const { data: { draft, prerelease, name, assets } } = await github.rest.repos.getLatestRelease({
     owner: context.repo.owner,
     repo: "sceneforge",
