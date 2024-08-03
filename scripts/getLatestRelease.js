@@ -19,11 +19,13 @@ module.exports = async ({ github, context, core }) => {
 
   if (artifact) {
     const result = await download(artifact, package);
-  }
 
-  console.log("DEBUG: draft", draft);
-  console.log("DEBUG: prerelease", prerelease);
-  console.log("DEBUG: name", name);
-  console.log("DEBUG: artifact", artifact);
-  console.log("DEBUG: result", result);
+    console.log("DEBUG: draft", draft);
+    console.log("DEBUG: prerelease", prerelease);
+    console.log("DEBUG: name", name);
+    console.log("DEBUG: artifact", artifact);
+    console.log("DEBUG: result", result);
+  } else {
+    console.log("DEBUG: No artifact found");
+  }
 };
