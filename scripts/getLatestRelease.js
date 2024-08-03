@@ -1,8 +1,8 @@
-import download from "./download.js";
-
-const package = 'sceneforge.tar.gz';
-
 export default async ({ github, context, core }) => {
+  const download = import(`${github.workspace}/scripts/download.js`);
+
+  const package = 'sceneforge.tar.gz';
+
   const { data: { draft, prerelease, name, assets } } = await github.rest.repos.getLatestRelease({
     owner: context.repo.owner,
     repo: "sceneforge",
