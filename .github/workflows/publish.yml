@@ -53,9 +53,9 @@ jobs:
 
       - name: Extract the release artifact
         run: |
-          mkdir -p "_site";
-          tar -C "_site" -xzf $RELEASE_ARTIFACT_FILENAME;
-          chmod -c -R +rX "_site" | while read line; do
+          mkdir -p "${{ github.workspace }}/dist";
+          tar -C "${{ github.workspace }}/dist" -xzf $RELEASE_ARTIFACT_FILENAME;
+          chmod -c -R +rX "${{ github.workspace }}/dist" | while read line; do
             echo "::warning title=Invalid file permissions automatically fixed::$line";
           done;
 
@@ -64,14 +64,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const buildReleaseStatus = require('./scripts/buildReleaseStatus.js');
-            await buildReleaseStatus({ workspace: "${{ github.workspace }}", path: "_site" });
+            const buildReleaseStatus = require("./scripts/buildReleaseStatus.js");
+            await buildReleaseStatus({ path: "${{ github.workspace }}/dist" });
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: "${{ github.workspace }}/dist"
+          retention-days: 1
       
       - name: Deploy to GitHub Pages
         id: deployment
