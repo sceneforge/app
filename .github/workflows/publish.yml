@@ -65,7 +65,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const buildReleaseStatus = require('./scripts/buildReleaseStatus.js');
-            await buildReleaseStatus({ workspace: "${{ github.workspace }}" });
+            await buildReleaseStatus({ workspace: "${{ github.workspace }}", path: "_site" });
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
