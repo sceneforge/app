@@ -1,7 +1,7 @@
 const { join } = require("path");
 const download = require("./download.js");
 
-module.exports = async ({ github, context, core }) => {
+module.exports = async ({ github, context, core, workspace }) => {
   const package = "sceneforge.tar.gz";
 
   const { data: { draft, prerelease, name, assets } } = await github.rest.repos.getLatestRelease({
@@ -26,7 +26,7 @@ module.exports = async ({ github, context, core }) => {
   console.log("DEBUG: draft", draft);
 
   if (artifact) {
-    const result = await download(artifact, join(github.workspace, package));
+    const result = await download(artifact, join(workspace, package));
 
     core.exportVariable('artifact_path', result.path);
     core.exportVariable('artifact_size', result.size);
