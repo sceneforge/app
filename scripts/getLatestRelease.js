@@ -1,3 +1,4 @@
+const { join } = require("path");
 const download = require("./download.js");
 
 module.exports = async ({ github, context, core }) => {
@@ -25,7 +26,7 @@ module.exports = async ({ github, context, core }) => {
   console.log("DEBUG: draft", draft);
 
   if (artifact) {
-    const result = await download(artifact, package);
+    const result = await download(artifact, join(github.workspace, package));
 
     core.exportVariable('artifact_path', result.path);
     core.exportVariable('artifact_size', result.size);
