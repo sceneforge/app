@@ -43,4 +43,4 @@ jobs:
       - name: Extract the release artifact
         run: |
           mkdir -p ${{ github.workspace }}/dist;
-          tar -C ${{ github.workspace }}/dist -xczf $RELEASE_ARTIFACT_FILENAME;
+          tar -C ${{ github.workspace }}/dist -xvzf $RELEASE_ARTIFACT_FILENAME;
