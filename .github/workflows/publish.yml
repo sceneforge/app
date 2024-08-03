@@ -30,11 +30,17 @@ jobs:
             await getLatestRelease({ github, context, core, workspace: "${{ github.workspace }}" });
     
       - name: DEBUG Artifact Variables
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            console.log('DEBUG: Artifact Path:', process.env.artifact_path);
-            console.log('DEBUG: Artifact Size:', process.env.artifact_size);
-            console.log('DEBUG: Artifact Basename:', process.env.artifact_basename);
-            console.log('DEBUG: Artifact filename:', process.env.artifact_filename);
+        run: |
+          echo "DEBUG: Release Name: $RELEASE_NAME";
+          echo "DEBUG: Release Draft: $RELEASE_DRAFT";
+          echo "DEBUG: Release Prerelease: $RELEASE_PRERELEASE";
+          echo "DEBUG: Release Artifact: $RELEASE_ARTIFACT";
+          echo "DEBUG: Artifact Path: $RELEASE_ARTIFACT_PATH";
+          echo "DEBUG: Artifact Size: $RELEASE_ARTIFACT_SIZE";
+          echo "DEBUG: Artifact Basename: $RELEASE_ARTIFACT_BASENAME";
+          echo "DEBUG: Artifact filename: $RELEASE_ARTIFACT_FILENAME";
+
+      - name: Extract the release artifact
+        run:
+          mkdir -p ${{ github.workspace }}/dist
+          tar -C ${{ github.workspace }}/dist -xczf $RELEASE_ARTIFACT

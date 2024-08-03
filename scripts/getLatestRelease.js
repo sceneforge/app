@@ -9,33 +9,33 @@ module.exports = async ({ github, context, core, workspace }) => {
     repo: "sceneforge",
   });
 
-  core.exportVariable('draft', draft);
-  core.exportVariable('prerelease', prerelease);
+  core.exportVariable('RELEASE_DRAFT', draft);
+  console.log("DEBUG: RELEASE_DRAFT", draft);
 
-  console.log("DEBUG: draft", draft);
-  console.log("DEBUG: prerelease", prerelease);
+  core.exportVariable('RELEASE_PRERELEASE', prerelease);
+  console.log("DEBUG: RELEASE_PRERELEASE", prerelease);
 
-  core.exportVariable('name', name);
-
-  console.log("DEBUG: name", name);
+  core.exportVariable('RELEASE_NAME', name);
+  console.log("DEBUG: RELEASE_NAME", name);
 
   const artifact = assets.find(({ name }) => name === package)?.browser_download_url;
 
-  core.exportVariable('artifact', artifact);
-
-  console.log("DEBUG: draft", draft);
+  core.exportVariable('RELEASE_ARTIFACT', artifact);
+  console.log("DEBUG: RELEASE_ARTIFACT", artifact);
 
   if (artifact) {
     const result = await download(artifact, join(workspace, package));
 
-    core.exportVariable('artifact_path', result.path);
-    core.exportVariable('artifact_size', result.size);
-    core.exportVariable('artifact_basename', result.basename);
-    core.exportVariable('artifact_filename', result.filename);
+    core.exportVariable('RELEASE_ARTIFACT_PATH', result.path);
+    console.log("DEBUG: RELEASE_ARTIFACT_PATH", result.path);
 
-    console.log("DEBUG: artifact_path", result.path);
-    console.log("DEBUG: artifact_size", result.size);
-    console.log("DEBUG: artifact_basename", result.basename);
-    console.log("DEBUG: artifact_filename", result.filename);
+    core.exportVariable('RELEASE_ARTIFACT_SIZE', result.size);
+    console.log("DEBUG: RELEASE_ARTIFACT_SIZE", result.size);
+
+    core.exportVariable('RELEASE_ARTIFACT_BASENAME', result.basename);
+    console.log("DEBUG: RELEASE_ARTIFACT_BASENAME", result.basename);
+
+    core.exportVariable('RELEASE_ARTIFACT_FILENAME', result.filename);
+    console.log("DEBUG: RELEASE_ARTIFACT_FILENAME", result.filename);
   }
 };
