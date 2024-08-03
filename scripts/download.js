@@ -31,6 +31,8 @@ const download = async (url, dest) => {
               url: uri.href,
             }],
             filename: dest,
+            basename: file.basename,
+            path: file.path,
             size: file.bytesWritten
           });
         }).on("error", err => {
