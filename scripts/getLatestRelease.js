@@ -18,7 +18,7 @@ module.exports = async ({ github, context, core }) => {
   core.exportVariable('artifact', artifact);
 
   if (artifact) {
-    const result = await download(artifact?.browser_download_url, package);
+    const result = await download(artifact, package);
   }
 
   console.log("DEBUG: draft", draft);
