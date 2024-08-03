@@ -1,8 +1,8 @@
-import * as http from "http";
-import * as https from "https";
-import { basename } from 'path'
-import * as fs from "fs";
-import { URL } from "url";
+const http = require("http");
+const https = require("https");
+const { basename } = require("path");
+const fs = require("fs");
+const { URL } = require("url");
 
 const TIMEOUT = 10 * 1000; // 10 seconds
 
@@ -73,4 +73,4 @@ const download = async (url, dest) => {
   });
 };
 
-export default download;
+module.exports = download;
