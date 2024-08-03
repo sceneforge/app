@@ -26,5 +26,15 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const script = require('./scripts/getLatestRelease.js');
-            await script({ github, context, core, workspace: "${{ github.workspace }}" });
+            const getLatestRelease = require('./scripts/getLatestRelease.js');
+            await getLatestRelease({ github, context, core, workspace: "${{ github.workspace }}" });
+    
+      - name: DEBUG Artifact Variables
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            console.log('DEBUG: Artifact Path:', process.env.artifact_path);
+            console.log('DEBUG: Artifact Size:', process.env.artifact_size);
+            console.log('DEBUG: Artifact Basename:', process.env.artifact_basename);
+            console.log('DEBUG: Artifact filename:', process.env.artifact_filename);
