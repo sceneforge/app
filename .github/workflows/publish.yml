@@ -41,6 +41,6 @@ jobs:
           echo "DEBUG: Artifact filename: $RELEASE_ARTIFACT_FILENAME";
 
       - name: Extract the release artifact
-        run:
-          mkdir -p ${{ github.workspace }}/dist
-          tar -C ${{ github.workspace }}/dist -xczf $RELEASE_ARTIFACT
+        run: |
+          mkdir -p ${{ github.workspace }}/dist;
+          tar -C ${{ github.workspace }}/dist -xczf $RELEASE_ARTIFACT_FILENAME;
