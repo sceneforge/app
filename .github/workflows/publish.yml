@@ -16,6 +16,9 @@ concurrency:
 
 jobs:
   select_release:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,19 +31,42 @@ jobs:
           script: |
             const getLatestRelease = require('./scripts/getLatestRelease.js');
             await getLatestRelease({ github, context, core, workspace: "${{ github.workspace }}" });
-    
-      - name: DEBUG Artifact Variables
+
+      - name: Validate the release
         run: |
-          echo "DEBUG: Release Name: $RELEASE_NAME";
-          echo "DEBUG: Release Draft: $RELEASE_DRAFT";
-          echo "DEBUG: Release Prerelease: $RELEASE_PRERELEASE";
-          echo "DEBUG: Release Artifact: $RELEASE_ARTIFACT";
-          echo "DEBUG: Artifact Path: $RELEASE_ARTIFACT_PATH";
-          echo "DEBUG: Artifact Size: $RELEASE_ARTIFACT_SIZE";
-          echo "DEBUG: Artifact Basename: $RELEASE_ARTIFACT_BASENAME";
-          echo "DEBUG: Artifact filename: $RELEASE_ARTIFACT_FILENAME";
+          if [ -z "$RELEASE_ARTIFACT_FILENAME" ]; then
+            echo "::error title=No release artifact found::No release artifact found for the latest release";
+            exit 1;
+          else
+            echo "Release artifact found: $RELEASE_ARTIFACT_FILENAME";
+          fi;
+          if [[ "$RELEASE_PRERELEASE" != "false" ]]; then
+            echo "::error title=Pre-release artifact found::Pre-release artifact found for the latest release";
+            exit 1;
+          else
+            echo "Release is not a pre-release";
+          fi;
+          if [[ "$RELEASE_DRAFT" != "false" ]]; then
+            echo "::error title=Draft release found::Draft release found for the latest release";
+            exit 1;
+          else
+            echo "Release is not a draft";
+          fi;
 
       - name: Extract the release artifact
         run: |
-          mkdir -p ${{ github.workspace }}/dist;
-          tar -C ${{ github.workspace }}/dist -xvzf $RELEASE_ARTIFACT_FILENAME;
+          mkdir -p "_site";
+          tar -C "_site" -xzf $RELEASE_ARTIFACT_FILENAME;
+          chmod -c -R +rX "_site" | while read line; do
+            echo "::warning title=Invalid file permissions automatically fixed::$line";
+          done;
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
