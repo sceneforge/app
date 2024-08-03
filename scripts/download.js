@@ -7,6 +7,10 @@ const { URL } = require("url");
 const TIMEOUT = 10 * 1000; // 10 seconds
 
 const download = async (url, dest) => {
+  if (!url) {
+    throw new Error("URL is required");
+  }
+
   const pkg = url.toLowerCase().startsWith('https:') ? https : http;
 
   const uri = new URL(url)
