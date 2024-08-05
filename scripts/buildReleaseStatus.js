@@ -4,8 +4,8 @@ const { join } = require('path');
 module.exports = async ({ path }) => {
   const status = JSON.stringify({
     draft: process.env.RELEASE_DRAFT,
-    prerelease: process.env.RELEASE_PRERELEASE,
     name: process.env.RELEASE_NAME,
+    prerelease: process.env.RELEASE_PRERELEASE,
     timestamp: new Date().toISOString(),
   }, null, 2);
 

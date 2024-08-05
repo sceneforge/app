@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  select_release:
+  publish:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -29,27 +29,14 @@ jobs:
           script: |
             const getLatestRelease = require('./scripts/getLatestRelease.js');
             await getLatestRelease({ github, context, core, workspace: "${{ github.workspace }}" });
-
+            
       - name: Validate the release
-        run: |
-          if [ -z "$RELEASE_ARTIFACT_FILENAME" ]; then
-            echo "::error title=No release artifact found::No release artifact found for the latest release";
-            exit 1;
-          else
-            echo "Release artifact found: $RELEASE_ARTIFACT_FILENAME";
-          fi;
-          if [[ "$RELEASE_PRERELEASE" != "false" ]]; then
-            echo "::error title=Pre-release artifact found::Pre-release artifact found for the latest release";
-            exit 1;
-          else
-            echo "Release is not a pre-release";
-          fi;
-          if [[ "$RELEASE_DRAFT" != "false" ]]; then
-            echo "::error title=Draft release found::Draft release found for the latest release";
-            exit 1;
-          else
-            echo "Release is not a draft";
-          fi;
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const validateRelease = require('./scripts/validateRelease.js');
+            await validateRelease({ core });
 
       - name: Extract the release artifact
         run: |
