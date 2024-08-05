@@ -47,7 +47,7 @@ module.exports = async ({ github, core }) => {
       if (currentReleaseStatus.name === name) {
         errors.push({
           title: "Already released",
-          message: "The release has already been published",
+          message: `The release "${name}" is currently published`,
         });
       }
     }
@@ -59,7 +59,7 @@ module.exports = async ({ github, core }) => {
   }
 
   if (errors.length > 0) {
-    core.summary.addHeading("Release validation Errors", 2);
+    core.summary.addHeading("Release validation failed", 2);
 
     for (const error of errors) {
       core.error(error.title, error.message);
@@ -71,7 +71,7 @@ module.exports = async ({ github, core }) => {
     core.setFailed("Release validation failed");
   }
   else {
-    core.summary.addHeading("Release validation Success", 2);
+    core.summary.addHeading("Release validation success", 2);
     core.summary.addTable([
       [{ data: "Key", header: "true" }, { data: "Value", header: "true" }],
       [{ data: "Draft" }, { data: draft }],

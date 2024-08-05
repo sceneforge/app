@@ -1,4 +1,4 @@
-name: Publish
+name: Publish release
 
 on:
   workflow_dispatch:
@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   publish:
+    name: Publish latest release
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -22,7 +23,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get the latest release
+      - name: Get latest release
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -30,7 +31,7 @@ jobs:
             const getLatestRelease = require('./scripts/getLatestRelease.js');
             await getLatestRelease({ github, context, core, workspace: "${{ github.workspace }}" });
             
-      - name: Validate the release
+      - name: Validate release
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -38,7 +39,7 @@ jobs:
             const validateRelease = require('./scripts/validateRelease.js');
             await validateRelease({ core });
 
-      - name: Extract the release artifact
+      - name: Extract release artifact
         run: |
           mkdir -p "${{ github.workspace }}/dist";
           tar -C "${{ github.workspace }}/dist" -xzf $RELEASE_ARTIFACT_FILENAME;
@@ -46,7 +47,7 @@ jobs:
             echo "::warning title=Invalid file permissions automatically fixed::$line";
           done;
 
-      - name: Build the release status
+      - name: Build release status
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -54,15 +55,15 @@ jobs:
             const buildReleaseStatus = require("./scripts/buildReleaseStatus.js");
             await buildReleaseStatus({ path: "${{ github.workspace }}/dist" });
 
-      - name: Setup Pages
+      - name: Configure pages
         uses: actions/configure-pages@v5
 
-      - name: Upload Artifact
+      - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: "${{ github.workspace }}/dist"
           retention-days: 1
       
-      - name: Deploy to GitHub Pages
+      - name: Deploy pages
         id: deployment
         uses: actions/deploy-pages@v4
