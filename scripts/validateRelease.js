@@ -6,7 +6,7 @@ module.exports = async ({ github, core }) => {
 
   const errors = [];
 
-  if (draft !== "false" || draft !== false) {
+  if (draft !== "false" && draft !== false) {
     errors.push({
       title: "Draft release found",
       message: "Draft release found for the release",
@@ -20,14 +20,14 @@ module.exports = async ({ github, core }) => {
     });
   }
 
-  if (prerelease !== "false" || prerelease !== false) {
+  if (prerelease !== "false" && prerelease !== false) {
     errors.push({
       title: "Pre-release found",
       message: "Pre-release found for the release",
     });
   }
 
-  if (artifact === undefined || artifact === null || artifact === "") {
+  if (artifact === undefined && artifact === null && artifact === "") {
     errors.push({
       title: "Artifact not found",
       message: "The release must have an artifact URL linked to it",
@@ -40,11 +40,11 @@ module.exports = async ({ github, core }) => {
 
     if (
       typeof currentReleaseStatus === "object"
-      && currentReleaseState !== null
-      && "name" in currentReleaseState
-      && typeof currentReleaseState.name === "string"
+      && currentReleaseStatus !== null
+      && "name" in currentReleaseStatus
+      && typeof currentReleaseStatus.name === "string"
     ) {
-      if (currentReleaseState.name === name) {
+      if (currentReleaseStatus.name === name) {
         errors.push({
           title: "Already released",
           message: "The release has already been published",
@@ -59,10 +59,10 @@ module.exports = async ({ github, core }) => {
   }
 
   if (errors.length > 0) {
-    core.summary.addHeading("Release validation failed", 2);
+    core.summary.addHeading("Release validation Errors", 2);
 
     for (const error of errors) {
-      core.error(error.title);
+      core.error(error.title, error.message);
       core.summary.addDetails(error.title, error.message);
     }
 
@@ -70,4 +70,15 @@ module.exports = async ({ github, core }) => {
 
     core.setFailed("Release validation failed");
   }
-}
+  else {
+    core.summary.addHeading("Release validation Success", 2);
+    core.summary.addTable([
+      [{ data: "Key", header: "true" }, { data: "Value", header: "true" }],
+      [{ data: "Draft" }, { data: draft }],
+      [{ data: "Name" }, { data: name }],
+      [{ data: "Pre-release" }, { data: prerelease }],
+      [{ data: "Artifact" }, { data: artifact }],
+    ]);
+    core.summary.write();
+  }
+};
